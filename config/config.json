@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "nintex-tasks-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/nintexTasks/NintexTasksWebPart.js",
+          "manifest": "./src/webparts/nintexTasks/NintexTasksWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "NintexTasksWebPartStrings": "lib/webparts/nintexTasks/loc/{locale}.js"
+  }
+}

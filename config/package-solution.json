@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "nintex-tasks-client-side-solution",
+    "id": "275ccaf8-163f-4f92-8538-c28dd820db1b",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.21.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "nintex-tasks description"
+      },
+      "longDescription": {
+        "default": "nintex-tasks description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "nintex-tasks Feature",
+        "description": "The feature that activates elements of the nintex-tasks solution.",
+        "id": "39addab3-32a7-47e6-a92c-689f11b2faea",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/nintex-tasks.sppkg"
+  }
+}

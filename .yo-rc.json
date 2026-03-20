@@ -1,0 +1,22 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "nintex-tasks",
+    "componentType": "webpart",
+    "template": "react",
+    "componentName": "NintexTasks",
+    "componentDescription": "Displays Nintex workflow tasks for the current user",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.19.0",
+    "sdksVersions": {},
+    "version": "1.21.1",
+    "libraryName": "nintex-tasks",
+    "libraryId": "275ccaf8-163f-4f92-8538-c28dd820db1b",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionShortDescription": "nintex-tasks description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false
+  }
+}

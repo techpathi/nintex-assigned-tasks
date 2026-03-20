@@ -1,0 +1,492 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.nintexTasks {
+  color: var(--bodyText, #323130);
+  overflow: hidden;
+
+  &.teams {
+    font-family: $ms-font-family-fallbacks;
+  }
+
+  .container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Header Title */
+  .headerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background: #8c39df; /* Same purple as Active status pill */
+  }
+
+  .headerTitle {
+    margin: 0;
+    padding: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: center;
+    display: inline-block;
+  }
+
+  /* Toolbar */
+  .toolbarContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 16px 24px;
+    border-bottom: 1px solid #edebe9;
+  }
+
+  .toolbarFilters {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .statusDropdown {
+    width: 200px;
+  }
+
+  .dateDropdown {
+    width: 200px;
+  }
+
+  .dateRangePickerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    height: 32px;
+    border: 1px solid #8a8886;
+    border-radius: 2px;
+    width: 220px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: #323130;
+    }
+  }
+
+  .dateRangeText {
+    font-size: 14px;
+    color: #323130;
+  }
+
+  .calendarIcon {
+    font-size: 14px;
+    color: #323130;
+  }
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+  .searchLabel {
+    font-size: 14px;
+    color: #605e5c;
+    white-space: nowrap;
+    margin-right: 4px;
+  }
+
+  .searchStack {
+    display: flex;
+  }
+
+  .searchBox {
+    width: 240px;
+  }
+
+  .refreshButton {
+    background: transparent;
+    border: 1px solid #8a8886;
+    border-radius: 2px;
+    padding: 0 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #323130;
+    transition: all 0.2s ease;
+    height: 32px;
+
+    &:hover {
+      background: #e1dfdd;
+      border-color: #605e5c;
+    }
+
+    &:active {
+      background: #c8c6c4;
+      transform: scale(0.95);
+    }
+
+    i {
+      font-size: 14px;
+      transition: transform 0.3s ease;
+    }
+  }
+
+
+  /* Error Bar */
+  .errorBar {
+    margin: 12px 24px 0;
+    border-radius: 4px;
+  }
+
+  /* Loading State */
+  .loadingContainer {
+    padding: 60px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+  }
+
+  /* Empty State */
+  .emptyState {
+    padding: 60px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 0 0 8px 8px;
+
+    .emptyIcon {
+      font-size: 48px;
+      color: #c8c6c4;
+      margin-bottom: 16px;
+    }
+
+    .emptySubtext {
+      color: #a19f9d;
+      margin-top: 8px;
+    }
+  }
+
+  /* Task List */
+  .listContainer {
+    background: #ffffff;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Pagination */
+  .paginationBar {
+    background: #faf9f8;
+    border-top: 1px solid #edebe9;
+    border-radius: 0 0 8px 8px;
+    padding: 10px 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    .paginationContent {
+      width: 100%;
+    }
+
+    .pageInfo {
+      font-size: 13px;
+      font-weight: 600;
+      color: #605e5c;
+    }
+
+    .paginationButton {
+      min-width: 100px;
+    }
+  }
+
+  .taskList {
+    :global {
+      .ms-DetailsHeader {
+        background: #faf9f8;
+        border-bottom: 2px solid #edebe9;
+        padding-top: 0;
+
+        .ms-DetailsHeader-cell {
+          font-weight: 600;
+          color: #323130;
+          font-size: 13px;
+
+          &:hover {
+            background: #f3f2f1;
+          }
+        }
+      }
+
+      .ms-DetailsRow {
+        border-bottom: 1px solid #f3f2f1;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        cursor: pointer;
+
+        &:hover {
+          background: #f8f8f8;
+        }
+
+        .ms-DetailsRow-cell {
+          display: flex;
+          align-items: center;
+          padding: 10px 12px;
+        }
+      }
+    }
+  }
+
+  .taskName, .taskNameLink {
+    font-weight: 600;
+    color: #0078d4;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      text-decoration: underline;
+      color: #004578;
+    }
+  }
+
+  .cellText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #323130;
+    font-size: 13px;
+  }
+
+  /* Status Badge Outline */
+  .statusBadgeOutline {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+    background: transparent;
+    border: 1px solid #605e5c;
+    color: #605e5c;
+  }
+
+  .statusActiveOutline {
+    border-color: #8c39df; /* Purple/Blue outline for active in Nintex */
+    color: #8c39df;
+  }
+
+  .statusCompleteOutline {
+    border-color: #137333;
+    color: #137333;
+  }
+
+  .statusExpiredOutline {
+    border-color: #c5221f;
+    color: #c5221f;
+  }
+
+  .statusTerminatedOutline {
+    border-color: #a4262c;
+    color: #a4262c;
+  }
+
+  .statusOverriddenOutline {
+    border-color: #e37400;
+    color: #e37400;
+  }
+
+  .overdue {
+    color: #c5221f !important;
+    font-weight: 600;
+  }
+
+  /* Detail Panel */
+  .detailPanel {
+    :global {
+      .ms-Panel-main {
+        background: #faf9f8;
+      }
+
+      .ms-Panel-headerText {
+        font-size: 20px;
+        font-weight: 600;
+        color: #323130;
+
+        span {
+          font-size: 13px;
+          color: #a19f9d;
+          margin-right: 4px;
+        }
+      }
+    }
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 800px) {
+    .toolbarContainer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    
+    .spacer {
+      display: none;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .headerContainer {
+      padding: 16px;
+    }
+    .toolbarContainer {
+      padding: 16px;
+    }
+    .loadingContainer, .emptyState, .paginationBar {
+      padding: 16px;
+    }
+    .statusDropdown, .dateDropdown, .dateRangePickerContainer, .searchBox {
+      width: 100%;
+    }
+    .toolbarFilters, .searchStack {
+      width: 100%;
+    }
+  }
+
+  /* Detail Panel Overlay Styles */
+  .detailContent {
+    padding: 8px 0;
+  }
+
+  .detailTitle {
+    font-weight: 600;
+    color: #323130;
+    line-height: 1.3;
+  }
+
+  .statusIcon {
+    font-size: 20px;
+    color: #605e5c;
+
+    &.statusActive {
+      color: #137333;
+    }
+
+    &.statusCompleted {
+      color: #5f6368;
+    }
+
+    &.statusExpired {
+      color: #c5221f;
+    }
+  }
+
+  .detailField {
+    padding: 8px 0;
+    border-bottom: 1px solid #edebe9;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .detailLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: #605e5c;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    padding: 0;
+  }
+
+  .detailValue {
+    font-size: 14px;
+    color: #323130;
+    line-height: 1.5;
+  }
+
+  .formLink {
+    color: #0078d4;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: #004578;
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Date Filter Callout */
+.dateFilterCallout {
+  padding: 16px;
+  width: 320px;
+}
+
+.segmentedControl {
+  display: flex;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+
+  .segmentButton {
+    flex: 1;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 14px;
+    cursor: pointer;
+    background: transparent;
+    color: #0078d4;
+    border: none;
+    outline: none;
+    transition: background 0.1s ease;
+
+    &.segmentActive {
+      background: #0078d4;
+      color: white;
+      font-weight: 600;
+    }
+
+    &:hover:not(.segmentActive) {
+      background: #f3f2f1;
+    }
+  }
+}
+
+.presetList {
+  display: flex;
+  flex-direction: column;
+
+  .presetOption {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #323130;
+    border-radius: 4px;
+    transition: background 0.1s;
+
+    &:hover {
+      background: #e1dfdd;
+    }
+
+    &.presetSelected {
+      background: #cce3f5;
+    }
+  }
+}
+
+.customDateContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
