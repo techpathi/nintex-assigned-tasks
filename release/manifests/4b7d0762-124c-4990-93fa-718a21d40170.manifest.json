@@ -38,7 +38,7 @@
     "scriptResources": {
       "nintex-tasks-web-part": {
         "type": "path",
-        "path": "nintex-tasks-web-part.js"
+        "path": "nintex-tasks-web-part_bd912ea76e25ba80cd8b.js"
       },
       "react": {
         "type": "component",
@@ -67,7 +67,7 @@
       },
       "NintexTasksWebPartStrings": {
         "type": "path",
-        "path": "NintexTasksWebPartStrings_en-us.js"
+        "path": "NintexTasksWebPartStrings_en-us_241b9e2b64f0fddb7ccc9fc4b9bede4b.js"
       },
       "@microsoft/sp-http": {
         "type": "component",
