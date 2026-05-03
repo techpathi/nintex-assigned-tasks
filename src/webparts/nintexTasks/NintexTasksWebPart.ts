@@ -18,6 +18,8 @@ import { TaskStatus } from './models/INintexTask';
 export interface INintexTasksWebPartProps {
   tenantUrl: string;
   tokenListUrl: string;
+  tokenTitleFilter: string;
+  tokenColumnName: string;
   dashboardUrl: string;
   defaultStatusFilter: TaskStatus;
 }
@@ -32,6 +34,8 @@ export default class NintexTasksWebPart extends BaseClientSideWebPart<INintexTas
       {
         tenantUrl: this.properties.tenantUrl || '',
         tokenListUrl: this.properties.tokenListUrl || '',
+        tokenTitleFilter: this.properties.tokenTitleFilter || '',
+        tokenColumnName: this.properties.tokenColumnName || 'Token',
         dashboardUrl: this.properties.dashboardUrl || '',
         defaultStatusFilter: this.properties.defaultStatusFilter || 'active',
         httpClient: this.context.httpClient,
@@ -109,6 +113,16 @@ export default class NintexTasksWebPart extends BaseClientSideWebPart<INintexTas
                   label: 'Token List URL',
                   placeholder: "https://tenant.sharepoint.com/sites/mysite/_api/web/lists/getbytitle('NintexTokens')/items",
                   description: 'Full SP REST API URL to the list items endpoint (must include /_api/... and /items)'
+                }),
+                PropertyPaneTextField('tokenTitleFilter', {
+                  label: 'Token List Title Filter',
+                  placeholder: "NWC_TOKEN",
+                  description: 'Value to filter the Title column by in the token list'
+                }),
+                PropertyPaneTextField('tokenColumnName', {
+                  label: 'Token Column Name',
+                  placeholder: "Token",
+                  description: 'Internal name of the column containing the token value (default: Token)'
                 }),
                 PropertyPaneDropdown('defaultStatusFilter', {
                   label: 'Default Status Filter',

@@ -4,6 +4,8 @@ import { TaskStatus } from '../models/INintexTask';
 export interface INintexTasksProps {
   tenantUrl: string;
   tokenListUrl: string;
+  tokenTitleFilter?: string;
+  tokenColumnName?: string;
   dashboardUrl: string;
   defaultStatusFilter: TaskStatus;
   httpClient: HttpClient;

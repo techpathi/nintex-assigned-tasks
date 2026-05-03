@@ -8,14 +8,20 @@ const EXPIRY_BUFFER_MS = 5 * 60 * 1000; // 5 minutes buffer before JWT expiry
 export class TokenService {
   private spHttpClient: SPHttpClient;
   private tokenListUrl: string;
+  private titleFilter: string | undefined;
+  private tokenColumnName: string;
 
   /**
    * @param spHttpClient SPFx SPHttpClient instance
    * @param tokenListUrl Full SP REST API URL or browser list URL for the token list
+   * @param titleFilter Optional title to filter the token list by
+   * @param tokenColumnName The internal name of the column containing the token (default: Token)
    */
-  constructor(spHttpClient: SPHttpClient, tokenListUrl: string) {
+  constructor(spHttpClient: SPHttpClient, tokenListUrl: string, titleFilter?: string, tokenColumnName: string = 'Token') {
     this.spHttpClient = spHttpClient;
     this.tokenListUrl = tokenListUrl.replace(/\/+$/, '');
+    this.titleFilter = titleFilter;
+    this.tokenColumnName = tokenColumnName || 'Token';
   }
 
   /**
@@ -37,9 +43,10 @@ export class TokenService {
    */
   public clearCache(): void {
     try {
-      localStorage.removeItem(CACHE_KEY);
-      localStorage.removeItem(CACHE_EXPIRY_KEY);
-      localStorage.removeItem(CACHE_ITEM_ID_KEY);
+      const cacheSuffix = this.titleFilter ? `_${this.titleFilter}` : '';
+      localStorage.removeItem(`${CACHE_KEY}${cacheSuffix}`);
+      localStorage.removeItem(`${CACHE_EXPIRY_KEY}${cacheSuffix}`);
+      localStorage.removeItem(`${CACHE_ITEM_ID_KEY}${cacheSuffix}`);
     } catch {
       // localStorage may not be available
     }
@@ -77,8 +84,9 @@ export class TokenService {
 
   private _getCachedToken(): string | undefined {
     try {
-      const token = localStorage.getItem(CACHE_KEY);
-      const expiryStr = localStorage.getItem(CACHE_EXPIRY_KEY);
+      const cacheSuffix = this.titleFilter ? `_${this.titleFilter}` : '';
+      const token = localStorage.getItem(`${CACHE_KEY}${cacheSuffix}`);
+      const expiryStr = localStorage.getItem(`${CACHE_EXPIRY_KEY}${cacheSuffix}`);
 
       if (token && expiryStr) {
         const expiry = parseInt(expiryStr, 10);
@@ -100,6 +108,7 @@ export class TokenService {
    */
   private _cacheToken(token: string, itemId: number | undefined): void {
     try {
+      const cacheSuffix = this.titleFilter ? `_${this.titleFilter}` : '';
       const jwtExpiry = this._parseJwtExpiry(token);
       let cacheExpiry: number;
 
@@ -116,11 +125,11 @@ export class TokenService {
         return;
       }
 
-      localStorage.setItem(CACHE_KEY, token);
-      localStorage.setItem(CACHE_EXPIRY_KEY, cacheExpiry.toString());
+      localStorage.setItem(`${CACHE_KEY}${cacheSuffix}`, token);
+      localStorage.setItem(`${CACHE_EXPIRY_KEY}${cacheSuffix}`, cacheExpiry.toString());
 
       if (itemId !== undefined) {
-        localStorage.setItem(CACHE_ITEM_ID_KEY, itemId.toString());
+        localStorage.setItem(`${CACHE_ITEM_ID_KEY}${cacheSuffix}`, itemId.toString());
       }
     } catch {
       // localStorage not available
@@ -156,11 +165,12 @@ export class TokenService {
 
   private async _fetchTokenFromList(): Promise<{ token: string; itemId: number | undefined }> {
     const baseApiUrl = this._buildApiUrl();
+    const cacheSuffix = this.titleFilter ? `_${this.titleFilter}` : '';
 
     // Check if we have a cached item ID — fetch items with ID > cached ID (newer tokens)
     let cachedItemId: number | undefined;
     try {
-      const storedId = localStorage.getItem(CACHE_ITEM_ID_KEY);
+      const storedId = localStorage.getItem(`${CACHE_ITEM_ID_KEY}${cacheSuffix}`);
       if (storedId) {
         cachedItemId = parseInt(storedId, 10);
       }
@@ -168,28 +178,38 @@ export class TokenService {
       // localStorage not available
     }
 
+    const select = `Id,Title,${this.tokenColumnName}`;
+    const filters: string[] = [];
+    if (this.titleFilter) {
+      filters.push(`Title eq '${this.titleFilter}'`);
+    }
+
     let apiUrl: string;
     if (cachedItemId) {
       // Fetch items newer than the cached item ID
-      apiUrl = `${baseApiUrl}?$select=Id,Title,Token&$filter=Id gt ${cachedItemId}&$top=1&$orderby=Id desc`;
+      const filterWithId = [...filters, `Id gt ${cachedItemId}`].join(' and ');
+      apiUrl = `${baseApiUrl}?$select=${select}&$filter=${filterWithId}&$top=1&$orderby=Id desc`;
     } else {
       // First fetch — get the latest item
-      apiUrl = `${baseApiUrl}?$select=Id,Title,Token&$top=1&$orderby=Id desc`;
+      const filterStr = filters.length > 0 ? `&$filter=${filters.join(' and ')}` : '';
+      apiUrl = `${baseApiUrl}?$select=${select}${filterStr}&$top=1&$orderby=Id desc`;
     }
 
     let items = await this._fetchItems(apiUrl);
 
     // If no newer items found, fall back to fetching the latest item regardless of ID
     if (items.length === 0 && cachedItemId) {
-      const fallbackUrl = `${baseApiUrl}?$select=Id,Title,Token&$top=1&$orderby=Id desc`;
+      const filterStr = filters.length > 0 ? `&$filter=${filters.join(' and ')}` : '';
+      const fallbackUrl = `${baseApiUrl}?$select=${select}${filterStr}&$top=1&$orderby=Id desc`;
       items = await this._fetchItems(fallbackUrl);
     }
 
     if (items.length === 0) {
-      throw new Error('No items found in the configured token list. Please add a list item with the Nintex API token.');
+      const filterMsg = this.titleFilter ? ` with Title '${this.titleFilter}'` : '';
+      throw new Error(`No items found in the configured token list${filterMsg}. Please add a list item with the Nintex API token.`);
     }
 
-    const tokenValue = (items[0].Token || items[0].Title) as string;
+    const tokenValue = (items[0][this.tokenColumnName] || items[0].Token || items[0].Title) as string;
     const itemId = items[0].Id as number | undefined;
 
     if (!tokenValue) {

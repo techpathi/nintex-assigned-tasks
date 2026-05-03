@@ -224,6 +224,8 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
     if (
       prevProps.tenantUrl !== this.props.tenantUrl ||
       prevProps.tokenListUrl !== this.props.tokenListUrl ||
+      prevProps.tokenTitleFilter !== this.props.tokenTitleFilter ||
+      prevProps.tokenColumnName !== this.props.tokenColumnName ||
       prevProps.dashboardUrl !== this.props.dashboardUrl
     ) {
       this._loadTasks().catch(() => { /* handled in _loadTasks */ });
@@ -246,7 +248,12 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
     this.setState({ isLoading: true, error: undefined });
 
     try {
-      const tokenService = new TokenService(spHttpClient, tokenListUrl);
+      const tokenService = new TokenService(
+        spHttpClient,
+        tokenListUrl,
+        this.props.tokenTitleFilter,
+        this.props.tokenColumnName
+      );
       const token = await tokenService.getToken();
 
       const service = new NintexApiService(httpClient, tenantUrl, dashboardUrl, token, userEmail);
@@ -287,7 +294,12 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
       });
     } catch (err) {
       try {
-        const tokenService = new TokenService(spHttpClient, tokenListUrl);
+        const tokenService = new TokenService(
+          spHttpClient,
+          tokenListUrl,
+          this.props.tokenTitleFilter,
+          this.props.tokenColumnName
+        );
         tokenService.clearCache();
       } catch { /* best effort */ }
 
