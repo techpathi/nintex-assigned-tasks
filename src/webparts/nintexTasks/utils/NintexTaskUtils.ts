@@ -55,6 +55,29 @@ export function getNintexTaskUrl(
   // Ensure tenant hostname is clean of protocols/slashes if user passed full URL
   const cleanTenant = tenantHostname.replace(/^https?:\/\//, '').replace(/\/+$/, '');
 
-  // Construct the expected NWC Dashboard URL
-  return `https://${cleanTenant}/dashboard/my/tasks?activity-feed-route=instance/${encodeURIComponent(task.workflowInstanceId)}/task/${encodeURIComponent(task.id)}/assignment/${encodeURIComponent(matchedAssignment.id)}`;
+  // Construct the expected direct task form URL
+  return `https://${cleanTenant}/task-forms/${task.id}_${matchedAssignment.id}`;
+}
+
+/**
+ * Transforms a dashboard task URL to a direct task form URL if it matches the expected pattern.
+ * 
+ * @param url The task/form URL to transform
+ * @returns The transformed URL or the original URL if it doesn't match
+ */
+export function transformToTaskFormUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  
+  // Pattern matches the activity-feed-route query parameter style URL:
+  // e.g. https://domain/dashboard/my/tasks?activity-feed-route=instance/xxx/task/yyy/assignment/zzz
+  const regex = /^(https?:\/\/[^/]+)\/dashboard\/my\/tasks\?activity-feed-route=instance\/[^/]+\/task\/([^/]+)\/assignment\/([^/]+)(?:&.*)?$/i;
+  const match = url.match(regex);
+  if (match) {
+    const host = match[1];
+    const taskId = match[2];
+    const assignmentId = match[3];
+    return `${host}/task-forms/${taskId}_${assignmentId}`;
+  }
+  
+  return url;
 }

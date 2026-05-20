@@ -127,7 +127,7 @@ export default class TaskDetailPanel extends React.Component<ITaskDetailPanelPro
             {task.description && (
               <Stack className={styles.detailField}>
                 <Label className={styles.detailLabel}>Description</Label>
-                <Text className={styles.detailValue}>{task.description}</Text>
+                <div className={styles.detailValue} dangerouslySetInnerHTML={{ __html: task.description }} />
               </Stack>
             )}
 

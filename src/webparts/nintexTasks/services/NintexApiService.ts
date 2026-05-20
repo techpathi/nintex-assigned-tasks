@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientResponse, IHttpClientOptions } from '@microsoft/sp-http';
 import { INintexTask, ITaskListResponse, TaskStatus } from '../models/INintexTask';
-import { getNintexTaskUrl, IRawNintexTask } from '../utils/NintexTaskUtils';
+import { getNintexTaskUrl, IRawNintexTask, transformToTaskFormUrl } from '../utils/NintexTaskUtils';
 
 export interface IListTasksOptions {
   status?: TaskStatus;
@@ -28,12 +28,12 @@ export class NintexApiService {
    * List tasks with optional filters and pagination
    */
   public async listTasks(options: IListTasksOptions = {}): Promise<ITaskListResponse> {
-    let url = `${this.tenantUrl}/workflows/v2/tasks?workflowMode=standard`;
+    let url = `${this.tenantUrl}/workflows/v2/tasks?workflowMode=standard&$top=25`;
 
     if (options.status) {
       url += `&status=${options.status}`;
     }
-
+    options.assignee = 'dev1@techpathi.site';
     if (options.assignee) {
       url += `&assignee=${encodeURIComponent(options.assignee.toLowerCase())}`;
     }
@@ -86,8 +86,8 @@ export class NintexApiService {
         outcome: task.outcome as string || primaryAssignment.outcome as string || undefined,
         taskType: task.taskType as string || task.type as string || undefined,
         workflowInstanceId: task.workflowInstanceId as string || undefined,
-        formUrl: task.formUrl as string || (urlsObj ? urlsObj.formUrl as string : undefined) || undefined,
-        taskUrl: getNintexTaskUrl(task as IRawNintexTask, this.currentUserEmail, this.dashboardUrl) || (urlsObj ? (urlsObj.taskUrl as string || urlsObj.formUrl as string) : undefined) || task.formUrl as string || undefined,
+        formUrl: transformToTaskFormUrl(task.formUrl as string || (urlsObj ? urlsObj.formUrl as string : undefined) || undefined),
+        taskUrl: transformToTaskFormUrl(getNintexTaskUrl(task as IRawNintexTask, this.currentUserEmail, this.dashboardUrl) || (urlsObj ? (urlsObj.taskUrl as string || urlsObj.formUrl as string) : undefined) || task.formUrl as string || undefined),
         initiator: task.initiator as string || undefined
       };
     });
@@ -143,8 +143,8 @@ export class NintexApiService {
       outcome: task.outcome as string || primaryAssignment.outcome as string || undefined,
       taskType: task.taskType as string || task.type as string || undefined,
       workflowInstanceId: task.workflowInstanceId as string || undefined,
-      formUrl: task.formUrl as string || (urlsObj ? urlsObj.formUrl as string : undefined) || undefined,
-      taskUrl: getNintexTaskUrl(task as IRawNintexTask, this.currentUserEmail, this.dashboardUrl) || (urlsObj ? (urlsObj.taskUrl as string || urlsObj.formUrl as string) : undefined) || task.formUrl as string || undefined,
+      formUrl: transformToTaskFormUrl(task.formUrl as string || (urlsObj ? urlsObj.formUrl as string : undefined) || undefined),
+      taskUrl: transformToTaskFormUrl(getNintexTaskUrl(task as IRawNintexTask, this.currentUserEmail, this.dashboardUrl) || (urlsObj ? (urlsObj.taskUrl as string || urlsObj.formUrl as string) : undefined) || task.formUrl as string || undefined),
       initiator: task.initiator as string || undefined
     };
   }
