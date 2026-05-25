@@ -33,7 +33,6 @@ export class NintexApiService {
     if (options.status) {
       url += `&status=${options.status}`;
     }
-    options.assignee = 'dev1@techpathi.site';
     if (options.assignee) {
       url += `&assignee=${encodeURIComponent(options.assignee.toLowerCase())}`;
     }
