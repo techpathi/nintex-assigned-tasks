@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
   "version": "2.0",
   "bundles": {
-    "nintex-tasks-web-part": {
+    "nintex-tasks-v2-web-part": {
       "components": [
         {
           "entrypoint": "./lib/webparts/nintexTasks/NintexTasksWebPart.js",

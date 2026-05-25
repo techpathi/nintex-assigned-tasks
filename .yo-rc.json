@@ -1,7 +1,7 @@
 {
   "@microsoft/generator-sharepoint": {
     "whichFolder": "subdir",
-    "solutionName": "nintex-tasks",
+    "solutionName": "nintex-tasks-v2",
     "componentType": "webpart",
     "template": "react",
     "componentName": "NintexTasks",
@@ -11,11 +11,11 @@
     "nodeVersion": "22.19.0",
     "sdksVersions": {},
     "version": "1.21.1",
-    "libraryName": "nintex-tasks",
-    "libraryId": "275ccaf8-163f-4f92-8538-c28dd820db1b",
+    "libraryName": "nintex-tasks-v2",
+    "libraryId": "c7c8a87b-5782-44cc-ad10-12cf7396c249",
     "environment": "spo",
     "packageManager": "npm",
-    "solutionShortDescription": "nintex-tasks description",
+    "solutionShortDescription": "NintexTasks v2 - Assigned tasks web part",
     "skipFeatureDeployment": true,
     "isDomainIsolated": false
   }

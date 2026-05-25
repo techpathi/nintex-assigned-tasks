@@ -1,6 +1,6 @@
 {
   "bundles": {
-    "nintex-tasks-web-part": {
+    "nintex-tasks-v2-web-part": {
       "dependencies": [
         {
           "componentId": "0d910c1c-13b9-4e1c-9aa4-b008c5e42d7d",

@@ -1,5 +1,5 @@
 {
-  "id": "4b7d0762-124c-4990-93fa-718a21d40170",
+  "id": "fb9ffa1a-aada-434d-98a3-92c15b354046",
   "alias": "NintexTasksWebPart",
   "componentType": "WebPart",
   "version": "0.0.1",
@@ -19,14 +19,14 @@
         "default": "Advanced"
       },
       "title": {
-        "default": "NintexTasks"
+        "default": "NintexTasks v2"
       },
       "description": {
-        "default": "Displays Nintex workflow tasks for the current user"
+        "default": "Displays Nintex workflow assigned tasks for the current user"
       },
       "officeFabricIconFontName": "Page",
       "properties": {
-        "description": "NintexTasks"
+        "description": "NintexTasks v2"
       }
     }
   ],
@@ -34,11 +34,11 @@
     "internalModuleBaseUrls": [
       "<!-- PATH TO CDN -->"
     ],
-    "entryModuleId": "nintex-tasks-web-part",
+    "entryModuleId": "nintex-tasks-v2-web-part",
     "scriptResources": {
-      "nintex-tasks-web-part": {
+      "nintex-tasks-v2-web-part": {
         "type": "path",
-        "path": "nintex-tasks-web-part_31775ef9c7ef81739e57.js"
+        "path": "nintex-tasks-v2-web-part.js"
       },
       "react": {
         "type": "component",
@@ -67,7 +67,7 @@
       },
       "NintexTasksWebPartStrings": {
         "type": "path",
-        "path": "NintexTasksWebPartStrings_en-us_241b9e2b64f0fddb7ccc9fc4b9bede4b.js"
+        "path": "NintexTasksWebPartStrings_en-us.js"
       },
       "@microsoft/sp-http": {
         "type": "component",

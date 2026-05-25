@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "nintex-tasks-client-side-solution",
-    "id": "275ccaf8-163f-4f92-8538-c28dd820db1b",
+    "name": "nintex-tasks-v2-client-side-solution",
+    "id": "c7c8a87b-5782-44cc-ad10-12cf7396c249",
     "version": "1.0.0.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
@@ -16,10 +16,10 @@
     },
     "metadata": {
       "shortDescription": {
-        "default": "nintex-tasks description"
+        "default": "NintexTasks v2 - Assigned tasks web part"
       },
       "longDescription": {
-        "default": "nintex-tasks description"
+        "default": "NintexTasks v2 - Displays Nintex workflow assigned tasks for the current user"
       },
       "screenshotPaths": [],
       "videoUrl": "",
@@ -27,14 +27,14 @@
     },
     "features": [
       {
-        "title": "nintex-tasks Feature",
-        "description": "The feature that activates elements of the nintex-tasks solution.",
-        "id": "39addab3-32a7-47e6-a92c-689f11b2faea",
+        "title": "nintex-tasks-v2 Feature",
+        "description": "The feature that activates elements of the nintex-tasks-v2 solution.",
+        "id": "fcbaa664-f8c5-4774-8763-1122e845fcef",
         "version": "1.0.0.0"
       }
     ]
   },
   "paths": {
-    "zippedPackage": "solution/nintex-tasks.sppkg"
+    "zippedPackage": "solution/nintex-tasks-v2.sppkg"
   }
 }

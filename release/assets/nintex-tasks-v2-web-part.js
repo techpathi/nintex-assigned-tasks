@@ -1,4 +1,4 @@
-define("4b7d0762-124c-4990-93fa-718a21d40170_0.0.1", ["react","react-dom","@microsoft/sp-core-library","@microsoft/sp-property-pane","@microsoft/sp-webpart-base","NintexTasksWebPartStrings","@microsoft/sp-http"], (__WEBPACK_EXTERNAL_MODULE__5959__, __WEBPACK_EXTERNAL_MODULE__8398__, __WEBPACK_EXTERNAL_MODULE__9676__, __WEBPACK_EXTERNAL_MODULE__9877__, __WEBPACK_EXTERNAL_MODULE__6642__, __WEBPACK_EXTERNAL_MODULE__3207__, __WEBPACK_EXTERNAL_MODULE__1909__) => { return /******/ (() => { // webpackBootstrap
+define("fb9ffa1a-aada-434d-98a3-92c15b354046_0.0.1", ["react","react-dom","@microsoft/sp-core-library","@microsoft/sp-property-pane","@microsoft/sp-webpart-base","NintexTasksWebPartStrings","@microsoft/sp-http"], (__WEBPACK_EXTERNAL_MODULE__5959__, __WEBPACK_EXTERNAL_MODULE__8398__, __WEBPACK_EXTERNAL_MODULE__9676__, __WEBPACK_EXTERNAL_MODULE__9877__, __WEBPACK_EXTERNAL_MODULE__6642__, __WEBPACK_EXTERNAL_MODULE__3207__, __WEBPACK_EXTERNAL_MODULE__1909__) => { return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -40521,4 +40521,4 @@ var NintexTasksWebPart = /** @class */ (function (_super) {
 /******/ })()
 ;
 });;
-//# sourceMappingURL=nintex-tasks-web-part.js.map
+//# sourceMappingURL=nintex-tasks-v2-web-part.js.map
