@@ -3,7 +3,7 @@
   "solution": {
     "name": "nintex-tasks-v2-client-side-solution",
     "id": "c7c8a87b-5782-44cc-ad10-12cf7396c249",
-    "version": "1.0.0.0",
+    "version": "1.1.0.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
