@@ -14,4 +14,8 @@ export interface INintexTasksProps {
   hasTeamsContext: boolean;
   userDisplayName: string;
   userEmail: string;
+  headerText?: string;
+  headerBgColor?: string;
+  headerTextColor?: string;
+  useDefaultColors?: boolean;
 }

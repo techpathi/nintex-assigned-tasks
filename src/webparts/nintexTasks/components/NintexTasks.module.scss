@@ -268,36 +268,39 @@
     padding: 2px 10px;
     border-radius: 12px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: capitalize;
-    background: transparent;
-    border: 1px solid #605e5c;
-    color: #605e5c;
+    border: 1.5px solid transparent;
   }
 
   .statusActiveOutline {
-    border-color: #8c39df; /* Purple/Blue outline for active in Nintex */
-    color: #8c39df;
+    background-color: #f3e8ff;
+    border-color: #d8b4fe;
+    color: #7c3aed;
   }
 
   .statusCompleteOutline {
-    border-color: #137333;
+    background-color: #e6f4ea;
+    border-color: #a8dab5;
     color: #137333;
   }
 
   .statusExpiredOutline {
-    border-color: #c5221f;
+    background-color: #fce8e6;
+    border-color: #f5c2c1;
     color: #c5221f;
   }
 
   .statusTerminatedOutline {
-    border-color: #a4262c;
+    background-color: #fde8e8;
+    border-color: #f8b4b4;
     color: #a4262c;
   }
 
   .statusOverriddenOutline {
-    border-color: #e37400;
-    color: #e37400;
+    background-color: #fef3c7;
+    border-color: #fde68a;
+    color: #d97706;
   }
 
   .overdue {
@@ -489,4 +492,38 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.delegateRowButton {
+  background: transparent;
+  border: 1.5px solid var(--brand-color, #8c39df);
+  color: var(--brand-color, #8c39df);
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  box-shadow: 0 1px 3px rgba(140, 57, 223, 0.1);
+
+  &:hover {
+    background: var(--brand-color, #8c39df);
+    color: #ffffff;
+    border-color: var(--brand-color, #8c39df);
+    box-shadow: 0 4px 12px rgba(140, 57, 223, 0.35);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    background: var(--brand-color, #8c39df);
+    border-color: var(--brand-color, #8c39df);
+    filter: brightness(0.9);
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(140, 57, 223, 0.2);
+  }
 }

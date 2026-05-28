@@ -32,9 +32,7 @@ import {
   TextField,
   ProgressIndicator,
   DefaultButton,
-  PrimaryButton,
-  IconButton,
-  IContextualMenuProps
+  PrimaryButton
 } from '@fluentui/react';
 import { INintexTask, TaskStatus } from '../models/INintexTask';
 import { NintexApiService } from '../services/NintexApiService';
@@ -222,46 +220,39 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
         )
       },
       {
-        key: 'actions',
-        name: '',
-        fieldName: 'actions',
-        minWidth: 40,
-        maxWidth: 40,
+        key: 'delegate',
+        name: 'Delegate',
+        fieldName: 'delegate',
+        minWidth: 100,
+        maxWidth: 120,
         isResizable: false,
         onRender: (item: INintexTask) => {
           if (item.status && item.status.toLowerCase() !== 'active') {
             return null;
           }
-          const menuProps: IContextualMenuProps = {
-            items: [
-              {
-                key: 'delegate',
-                text: 'Delegate',
-                iconProps: { iconName: 'People' },
-                onClick: (ev) => {
-                  if (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                  }
-                  this._openDelegateDialog(item);
-                }
-              }
-            ]
-          };
+          const { useDefaultColors, headerBgColor } = this.props;
+          const activeBrandColor = (useDefaultColors === false && headerBgColor) ? headerBgColor : '#8c39df';
+          const buttonStyle = {
+            '--brand-color': activeBrandColor
+          } as React.CSSProperties;
+
           return (
             <div data-selection-disabled={true}>
-              <IconButton
-                menuProps={menuProps}
-                iconProps={{ iconName: 'MoreVertical' }}
-                title="Task Actions"
-                ariaLabel="Task Actions"
+              <button
+                className={styles.delegateRowButton}
+                style={buttonStyle}
+                title="Delegate"
+                aria-label="Delegate"
                 onClick={(ev) => {
                   if (ev) {
                     ev.preventDefault();
                     ev.stopPropagation();
                   }
+                  this._openDelegateDialog(item);
                 }}
-              />
+              >
+                Delegate
+              </button>
             </div>
           );
         }
@@ -700,14 +691,27 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
       isPanelOpen,
       searchText
     } = this.state;
+    const { hasTeamsContext, headerText, headerBgColor, headerTextColor, useDefaultColors } = this.props;
 
-    const { hasTeamsContext } = this.props;
+    const headerStyle: React.CSSProperties = {};
+    const titleStyle: React.CSSProperties = {};
+
+    if (useDefaultColors === false) {
+      if (headerBgColor) {
+        headerStyle.backgroundColor = headerBgColor;
+      }
+      if (headerTextColor) {
+        titleStyle.color = headerTextColor;
+      }
+    }
 
     return (
       <section className={`${styles.nintexTasks} ${hasTeamsContext ? styles.teams : ''}`}>
         <div className={styles.container}>
-          <div className={styles.headerContainer}>
-            <h2 className={styles.headerTitle}>Assigned Tasks</h2>
+          <div className={styles.headerContainer} style={headerStyle}>
+            <h2 className={styles.headerTitle} style={titleStyle}>
+              {headerText || 'Assigned Tasks'}
+            </h2>
           </div>
 
           <div className={styles.toolbarContainer}>

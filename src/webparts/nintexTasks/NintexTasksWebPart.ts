@@ -5,7 +5,8 @@ import {
   type IPropertyPaneConfiguration,
   PropertyPaneTextField,
   PropertyPaneDropdown,
-  IPropertyPaneDropdownOption
+  IPropertyPaneDropdownOption,
+  PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
@@ -22,6 +23,10 @@ export interface INintexTasksWebPartProps {
   tokenColumnName: string;
   dashboardUrl: string;
   defaultStatusFilter: TaskStatus;
+  headerText: string;
+  headerBgColor: string;
+  headerTextColor: string;
+  useDefaultColors: boolean;
 }
 
 export default class NintexTasksWebPart extends BaseClientSideWebPart<INintexTasksWebPartProps> {
@@ -43,7 +48,11 @@ export default class NintexTasksWebPart extends BaseClientSideWebPart<INintexTas
         isDarkTheme: this._isDarkTheme,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
-        userEmail: this.context.pageContext.user.email
+        userEmail: this.context.pageContext.user.email,
+        headerText: this.properties.headerText,
+        headerBgColor: this.properties.headerBgColor,
+        headerTextColor: this.properties.headerTextColor,
+        useDefaultColors: this.properties.useDefaultColors
       }
     );
 
@@ -128,6 +137,32 @@ export default class NintexTasksWebPart extends BaseClientSideWebPart<INintexTas
                   label: 'Default Status Filter',
                   options: statusOptions,
                   selectedKey: 'active'
+                })
+              ]
+            },
+            {
+              groupName: 'Header Configuration',
+              groupFields: [
+                PropertyPaneTextField('headerText', {
+                  label: 'Header Text',
+                  placeholder: 'Assigned Tasks',
+                  description: 'Custom title for the web part header (default: Assigned Tasks)'
+                }),
+                PropertyPaneToggle('useDefaultColors', {
+                  label: 'Use Default Colors',
+                  checked: this.properties.useDefaultColors !== false
+                }),
+                PropertyPaneTextField('headerBgColor', {
+                  label: 'Header Background Color',
+                  placeholder: '#8c39df',
+                  description: 'Hex color code (e.g., #8c39df) for the header background',
+                  disabled: this.properties.useDefaultColors !== false
+                }),
+                PropertyPaneTextField('headerTextColor', {
+                  label: 'Header Text Color',
+                  placeholder: '#ffffff',
+                  description: 'Hex color code (e.g., #ffffff) for the header text',
+                  disabled: this.properties.useDefaultColors !== false
                 })
               ]
             }
