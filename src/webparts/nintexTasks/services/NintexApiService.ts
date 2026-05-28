@@ -2,6 +2,13 @@ import { HttpClient, HttpClientResponse, IHttpClientOptions } from '@microsoft/s
 import { INintexTask, ITaskListResponse, TaskStatus } from '../models/INintexTask';
 import { getNintexTaskUrl, IRawNintexTask, transformToTaskFormUrl } from '../utils/NintexTaskUtils';
 
+export interface INintexUser {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}
+
 export interface IListTasksOptions {
   status?: TaskStatus;
   assignee?: string;
@@ -87,7 +94,9 @@ export class NintexApiService {
         workflowInstanceId: task.workflowInstanceId as string || undefined,
         formUrl: transformToTaskFormUrl(task.formUrl as string || (urlsObj ? urlsObj.formUrl as string : undefined) || undefined),
         taskUrl: transformToTaskFormUrl(getNintexTaskUrl(task as IRawNintexTask, this.currentUserEmail, this.dashboardUrl) || (urlsObj ? (urlsObj.taskUrl as string || urlsObj.formUrl as string) : undefined) || task.formUrl as string || undefined),
-        initiator: task.initiator as string || undefined
+        initiator: task.initiator as string || undefined,
+        taskId: task.id as string,
+        assignmentId: primaryAssignment.id as string || task.id as string
       };
     });
 
@@ -144,7 +153,62 @@ export class NintexApiService {
       workflowInstanceId: task.workflowInstanceId as string || undefined,
       formUrl: transformToTaskFormUrl(task.formUrl as string || (urlsObj ? urlsObj.formUrl as string : undefined) || undefined),
       taskUrl: transformToTaskFormUrl(getNintexTaskUrl(task as IRawNintexTask, this.currentUserEmail, this.dashboardUrl) || (urlsObj ? (urlsObj.taskUrl as string || urlsObj.formUrl as string) : undefined) || task.formUrl as string || undefined),
-      initiator: task.initiator as string || undefined
+      initiator: task.initiator as string || undefined,
+      taskId: task.id as string,
+      assignmentId: primaryAssignment.id as string || task.id as string
     };
+  }
+
+  /**
+   * Delegate a task assignment to other users
+   */
+  public async delegateTaskAssignment(taskId: string, assignmentId: string, delegateeEmails: string[], message: string, token: string): Promise<boolean> {
+    const endpoint = `${this.tenantUrl}/workflows/v2/tasks/${taskId}/assignments/${assignmentId}/delegate`;
+    
+    const options: IHttpClientOptions = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        assignees: delegateeEmails,
+        message: message || undefined
+      }),
+      method: 'PUT'
+    };
+
+    const response: HttpClientResponse = await this.httpClient.fetch(endpoint, HttpClient.configurations.v1, options);
+    
+    if (!response.ok) {
+      const errorMsg = await response.text();
+      throw new Error(`Failed to delegate task ${taskId} assignment ${assignmentId}: ${errorMsg}`);
+    }
+
+    return true;
+  }
+
+  /**
+   * Search Nintex users for delegation
+   */
+  public async searchNintexUsers(filterText: string, token: string): Promise<INintexUser[]> {
+    if (!filterText) return [];
+    const endpoint = `${this.tenantUrl}/tenants/v1/users?filter=${encodeURIComponent(filterText)}&limit=20`;
+    
+    const options: IHttpClientOptions = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    };
+
+    const response: HttpClientResponse = await this.httpClient.get(endpoint, HttpClient.configurations.v1, options);
+    if (!response.ok) {
+      console.error("Failed to fetch Nintex users", await response.text());
+      return [];
+    }
+
+    const data = await response.json();
+    return Array.isArray(data) ? data : data.users || [];
   }
 }

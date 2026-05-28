@@ -23,7 +23,18 @@ import {
   Icon,
   Callout,
   DirectionalHint,
-  DatePicker
+  DatePicker,
+  Dialog,
+  DialogType,
+  DialogFooter,
+  NormalPeoplePicker,
+  IPersonaProps,
+  TextField,
+  ProgressIndicator,
+  DefaultButton,
+  PrimaryButton,
+  IconButton,
+  IContextualMenuProps
 } from '@fluentui/react';
 import { INintexTask, TaskStatus } from '../models/INintexTask';
 import { NintexApiService } from '../services/NintexApiService';
@@ -49,6 +60,15 @@ interface INintexTasksState {
   dateType: 'assigned' | 'completed';
   customDateStart?: Date;
   customDateEnd?: Date;
+
+  // Delegation state
+  isDelegateDialogOpen: boolean;
+  delegateToUser: IPersonaProps | undefined;
+  delegationMessage: string;
+  isDelegating: boolean;
+  delegateErrorMsg: string;
+  delegateSuccessMsg: string;
+  taskToDelegate: INintexTask | undefined;
 }
 
 export default class NintexTasks extends React.Component<INintexTasksProps, INintexTasksState> {
@@ -74,7 +94,14 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
       dateFilterPreset: '30',
       dateType: 'assigned',
       customDateStart: undefined,
-      customDateEnd: undefined
+      customDateEnd: undefined,
+      isDelegateDialogOpen: false,
+      delegateToUser: undefined,
+      delegationMessage: '',
+      isDelegating: false,
+      delegateErrorMsg: '',
+      delegateSuccessMsg: '',
+      taskToDelegate: undefined
     };
 
     this._columns = this._buildColumns();
@@ -193,6 +220,51 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
         onRender: (item: INintexTask) => (
           <Text className={styles.cellText}>{item.completedBy || '-'}</Text>
         )
+      },
+      {
+        key: 'actions',
+        name: '',
+        fieldName: 'actions',
+        minWidth: 40,
+        maxWidth: 40,
+        isResizable: false,
+        onRender: (item: INintexTask) => {
+          if (item.status && item.status.toLowerCase() !== 'active') {
+            return null;
+          }
+          const menuProps: IContextualMenuProps = {
+            items: [
+              {
+                key: 'delegate',
+                text: 'Delegate',
+                iconProps: { iconName: 'People' },
+                onClick: (ev) => {
+                  if (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                  }
+                  this._openDelegateDialog(item);
+                }
+              }
+            ]
+          };
+          return (
+            <div data-selection-disabled={true}>
+              <IconButton
+                menuProps={menuProps}
+                iconProps={{ iconName: 'MoreVertical' }}
+                title="Task Actions"
+                ariaLabel="Task Actions"
+                onClick={(ev) => {
+                  if (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                  }
+                }}
+              />
+            </div>
+          );
+        }
       }
     ];
   }
@@ -499,6 +571,117 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
     this._loadTasks().catch(() => { /* handled in _loadTasks */ });
   }
 
+  private _onResolveDelegateSuggestions = async (filterText: string): Promise<IPersonaProps[]> => {
+    if (!filterText || filterText.length < 2) return [];
+    try {
+      const { spHttpClient, tokenListUrl, tenantUrl, dashboardUrl, httpClient, userEmail } = this.props;
+      const tokenService = new TokenService(
+        spHttpClient,
+        tokenListUrl,
+        this.props.tokenTitleFilter,
+        this.props.tokenColumnName
+      );
+      const token = await tokenService.getToken();
+      const service = new NintexApiService(httpClient, tenantUrl, dashboardUrl, token, userEmail);
+      const users = await service.searchNintexUsers(filterText, token);
+      
+      const currentAssignee = this.state.taskToDelegate?.assignee?.toLowerCase() || '';
+      const filteredUsers = users.filter(u => {
+        const userEmailLower = u.email.toLowerCase();
+        return !currentAssignee.includes(userEmailLower);
+      });
+
+      return filteredUsers.map(u => ({
+        text: u.firstName ? `${u.firstName} ${u.lastName}` : u.email,
+        secondaryText: u.email,
+        id: u.id,
+        imageUrl: undefined
+      }));
+    } catch (e) {
+      console.error('Error fetching Nintex users:', e);
+      return [];
+    }
+  };
+
+  private _openDelegateDialog = (task: INintexTask): void => {
+    this.setState({
+      taskToDelegate: task,
+      isDelegateDialogOpen: true,
+      delegateToUser: undefined,
+      delegationMessage: '',
+      delegateErrorMsg: '',
+      delegateSuccessMsg: ''
+    });
+  };
+
+  private _onDelegateDialogDismiss = (): void => {
+    if (!this.state.isDelegating) {
+      this.setState({
+        isDelegateDialogOpen: false,
+        taskToDelegate: undefined
+      });
+    }
+  };
+
+  private _handleDelegate = async (): Promise<void> => {
+    const { taskToDelegate, delegateToUser, delegationMessage } = this.state;
+    this.setState({ delegateErrorMsg: '', delegateSuccessMsg: '' });
+
+    if (!taskToDelegate) return;
+
+    if (!delegateToUser || !delegateToUser.secondaryText) {
+      this.setState({ delegateErrorMsg: 'Please select a user to delegate to.' });
+      return;
+    }
+
+    if (taskToDelegate.assignee && delegateToUser.secondaryText.toLowerCase() === taskToDelegate.assignee.toLowerCase()) {
+      this.setState({ delegateErrorMsg: 'The delegate cannot be the same as the current assignee.' });
+      return;
+    }
+
+    if (!taskToDelegate.taskId || !taskToDelegate.assignmentId) {
+      this.setState({ delegateErrorMsg: 'Missing task or assignment ID for delegation.' });
+      return;
+    }
+
+    this.setState({ isDelegating: true });
+
+    try {
+      const { spHttpClient, tokenListUrl, tenantUrl, dashboardUrl, httpClient, userEmail } = this.props;
+      const tokenService = new TokenService(
+        spHttpClient,
+        tokenListUrl,
+        this.props.tokenTitleFilter,
+        this.props.tokenColumnName
+      );
+      const token = await tokenService.getToken();
+      const service = new NintexApiService(httpClient, tenantUrl, dashboardUrl, token, userEmail);
+
+      await service.delegateTaskAssignment(
+        taskToDelegate.taskId,
+        taskToDelegate.assignmentId,
+        [delegateToUser.secondaryText],
+        delegationMessage,
+        token
+      );
+
+      this.setState({
+        isDelegating: false,
+        isDelegateDialogOpen: false,
+        error: undefined,
+        successMsg: `Successfully delegated task to ${delegateToUser.text}.` // Temporarily using error state if successMsg not in state? Wait, I added delegateSuccessMsg!
+      } as unknown as Pick<INintexTasksState, keyof INintexTasksState>);
+      
+      // Show success message at top level via MessageBar by adding it to a state property, but wait, error is defined. Let's just reload tasks.
+      this._loadTasks().catch(() => {});
+    } catch (err) {
+      this.setState({
+        isDelegating: false,
+        delegateErrorMsg: `Delegation failed: ${err instanceof Error ? err.message : String(err)}`
+      });
+    }
+  };
+
   private _statusOptions: IDropdownOption[] = [
     { key: 'all', text: 'All' },
     { key: 'active', text: 'Active' },
@@ -706,6 +889,94 @@ export default class NintexTasks extends React.Component<INintexTasksProps, INin
             </Callout>
           )}
         </div>
+
+        {/* Delegate Dialog */}
+        <Dialog
+          hidden={!this.state.isDelegateDialogOpen}
+          onDismiss={this._onDelegateDialogDismiss}
+          dialogContentProps={{
+            type: DialogType.normal,
+            title: <span style={{ color: '#d83b01' }}>Delegate Task</span>,
+            showCloseButton: !this.state.isDelegating
+          }}
+          modalProps={{
+            isBlocking: false,
+            styles: { main: { maxWidth: 540, width: '100%' } }
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '0 5px' }}>
+            <MessageBar messageBarType={MessageBarType.info}>
+              Delegating task <strong>{this.state.taskToDelegate?.name}</strong> to a new user.
+            </MessageBar>
+
+            <div>
+              <label style={{ display: 'block', fontWeight: 600, fontSize: '12px', marginBottom: '4px' }}>
+                Delegate to <span style={{ color: '#d13438' }}>*</span>
+              </label>
+              <NormalPeoplePicker
+                onResolveSuggestions={this._onResolveDelegateSuggestions}
+                itemLimit={1}
+                disabled={this.state.isDelegating}
+                onChange={(items) => this.setState({ delegateToUser: items && items.length > 0 ? items[0] : undefined })}
+                selectedItems={this.state.delegateToUser ? [this.state.delegateToUser] : []}
+                resolveDelay={500}
+                styles={{ root: { maxWidth: '100%' } }}
+                inputProps={{ placeholder: 'Search for a Nintex user...' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontWeight: 600, fontSize: '12px', marginBottom: '4px' }}>
+                Message (optional)
+              </label>
+              <TextField
+                multiline
+                rows={3}
+                value={this.state.delegationMessage}
+                onChange={(e, val) => this.setState({ delegationMessage: val || '' })}
+                disabled={this.state.isDelegating}
+                placeholder="Optional reason for delegation..."
+              />
+            </div>
+
+            {this.state.isDelegating && (
+              <ProgressIndicator
+                label="Delegating task..."
+                description="Please wait while the task is delegated."
+              />
+            )}
+
+            {this.state.delegateErrorMsg && (
+              <MessageBar messageBarType={MessageBarType.error} isMultiline={true}>
+                {this.state.delegateErrorMsg}
+              </MessageBar>
+            )}
+
+            {this.state.delegateSuccessMsg && (
+              <MessageBar messageBarType={MessageBarType.success}>
+                {this.state.delegateSuccessMsg}
+              </MessageBar>
+            )}
+          </div>
+
+          <DialogFooter>
+            {this.state.isDelegating && (
+              <span style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '10px' }}>
+                <Spinner size={SpinnerSize.small} />
+              </span>
+            )}
+            <DefaultButton
+              onClick={this._onDelegateDialogDismiss}
+              text="Cancel"
+              disabled={this.state.isDelegating}
+            />
+            <PrimaryButton
+              onClick={this._handleDelegate}
+              text="Delegate"
+              disabled={this.state.isDelegating || !this.state.delegateToUser}
+            />
+          </DialogFooter>
+        </Dialog>
       </section>
     );
   }

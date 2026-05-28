@@ -15,6 +15,8 @@ export interface INintexTask {
   formUrl?: string;
   taskUrl?: string;
   initiator?: string;
+  taskId?: string;
+  assignmentId?: string;
 }
 
 export interface ITaskListResponse {
