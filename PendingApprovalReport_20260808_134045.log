@@ -1,0 +1,31 @@
+[2026-08-08 13:40:45] [INFO] ==========================================================
+[2026-08-08 13:40:45] [INFO] Starting Pending Content Export Script
+[2026-08-08 13:40:45] [INFO] CSV Path: .\test.csv
+[2026-08-08 13:40:45] [INFO] Excel Output Path: .\PendingApprovalReport_20260808_134045.xlsx
+[2026-08-08 13:40:45] [INFO] Text Log Path: .\PendingApprovalReport_20260808_134045.log
+[2026-08-08 13:40:45] [INFO] Use Certificate Auth: True
+[2026-08-08 13:40:45] [INFO] ClientId: b995b1c8-2bbf-41d5-86fa-a970546a172b
+[2026-08-08 13:40:45] [INFO] Tenant: mydev26.onmicrosoft.com
+[2026-08-08 13:40:45] [INFO] Certificate Path: ./pnp-app.pfx
+[2026-08-08 13:40:45] [INFO] ==========================================================
+[2026-08-08 13:40:46] [INFO] Site [1/2]: https://mydev26.sharepoint.com (1 library/libraries)
+[2026-08-08 13:40:49] [INFO]   Successfully connected to https://mydev26.sharepoint.com
+[2026-08-08 13:40:49] [INFO]   Processing library 'Site Pages'...
+[2026-08-08 13:40:50] [SUCCESS]   Finished 'Site Pages' (1 pending item(s) found).
+[2026-08-08 13:40:50] [INFO] Site [2/2]: https://mydev26.sharepoint.com/sites/dev (3 library/libraries)
+[2026-08-08 13:40:51] [INFO]   Successfully connected to https://mydev26.sharepoint.com/sites/dev
+[2026-08-08 13:40:51] [INFO]   Processing library 'PendingContentTest1'...
+[2026-08-08 13:40:52] [SUCCESS]   Finished 'PendingContentTest1' (2 pending item(s) found).
+[2026-08-08 13:40:52] [INFO]   Processing library 'PendingContentTest2'...
+[2026-08-08 13:40:53] [SUCCESS]   Finished 'PendingContentTest2' (0 pending item(s) found).
+[2026-08-08 13:40:53] [INFO]   Processing library 'Site Pages'...
+[2026-08-08 13:40:53] [SUCCESS]   Finished 'Site Pages' (18 pending item(s) found).
+[2026-08-08 13:40:53] [INFO] ==========================================================
+[2026-08-08 13:40:53] [INFO] Execution Summary:
+[2026-08-08 13:40:53] [INFO]   Total Unique Sites Processed : 2
+[2026-08-08 13:40:53] [INFO]   Total Pending Items Found    : 21
+[2026-08-08 13:40:53] [INFO]   Total Errors Encountered     : 0
+[2026-08-08 13:40:54] [SUCCESS] Excel Report saved successfully to: .\PendingApprovalReport_20260808_134045.xlsx
+[2026-08-08 13:40:54] [INFO] Text log file written to: .\PendingApprovalReport_20260808_134045.log
+[2026-08-08 13:40:54] [SUCCESS] Script completed successfully.
+[2026-08-08 13:40:54] [INFO] ==========================================================
